@@ -7,8 +7,8 @@ Full usage details, FAQs, background and more are available on the
 Development
 ===========
 
-[![Build Status](https://travis-ci.org/danielflower/multi-module-maven-release-plugin.svg?branch=master)](https://travis-ci.org/danielflower/multi-module-maven-release-plugin) ![Maven Central](https://img.shields.io/maven-central/v/com.github.danielflower.mavenplugins/multi-module-maven-release-plugin.svg)
-
+[![Build Status](https://travis-ci.org/danielflower/multi-module-maven-release-plugin.svg?branch=master)](https://travis-ci.org/danielflower/multi-module-maven-release-plugin)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.danielflower.mavenplugins/multi-module-maven-release-plugin)](https://maven-badges.herokuapp.com/maven-central/com.github.danielflower.mavenplugins/multi-module-maven-release-plugin)
 
 Contributing
 ------------
