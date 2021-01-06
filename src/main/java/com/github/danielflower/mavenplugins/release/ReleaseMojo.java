@@ -98,6 +98,13 @@ public class ReleaseMojo extends BaseMojo {
      */
     @Parameter(alias = "pushTags", defaultValue="true", property="push")
     private boolean pushTags;
+
+    /**
+     * Push tags to the remote repository at the end of the build, if it's successful.
+     * By default, the tags are pushed before the build starts.
+     */
+    @Parameter(alias = "pushTagsAtTheEnd", defaultValue="false", property="pushTagsAtTheEnd")
+    private boolean pushTagsAtTheEnd;
     
 
     @Override
@@ -133,10 +140,12 @@ public class ReleaseMojo extends BaseMojo {
 
             List<File> changedFiles = updatePomsAndReturnChangedFiles(log, repo, reactor);
 
-            // Do this before running the maven build in case the build uploads some artifacts and then fails. If it is
-            // not tagged in a half-failed build, then subsequent releases will re-use a version that is already in Nexus
-            // and so fail. The downside is that failed builds result in tags being pushed.
-            tagAndPushRepo(log, repo, proposedTags);
+            if(!pushTagsAtTheEnd) {
+                // Do this before running the maven build in case the build uploads some artifacts and then fails. If it is
+                // not tagged in a half-failed build, then subsequent releases will re-use a version that is already in Nexus
+                // and so fail. The downside is that failed builds result in tags being pushed.
+                tagAndPushRepo(log, repo, proposedTags);
+            }
 
             try {
             	final ReleaseInvoker invoker = new ReleaseInvoker(getLog(), project);
@@ -157,6 +166,9 @@ public class ReleaseMojo extends BaseMojo {
 
                 invoker.runMavenBuild(reactor);
                 revertChanges(log, repo, changedFiles, true); // throw if you can't revert as that is the root problem
+                if(pushTagsAtTheEnd) {
+                    tagAndPushRepo(log, repo, proposedTags);
+                }
             } finally {
                 revertChanges(log, repo, changedFiles, false); // warn if you can't revert but keep throwing the original exception so the root cause isn't lost
             }

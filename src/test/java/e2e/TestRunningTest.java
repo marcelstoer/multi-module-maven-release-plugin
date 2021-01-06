@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static scaffolding.GitMatchers.hasCleanWorkingDirectory;
 
 public class TestRunningTest {
@@ -33,6 +34,19 @@ public class TestRunningTest {
         assertThat(projectWithTestsThatFail.local, hasCleanWorkingDirectory());
         assertThat(projectWithTestsThatFail.local.tagList().call().get(0).getName(), is("refs/tags/module-with-test-failure-1.0.1"));
         assertThat(projectWithTestsThatFail.origin.tagList().call().get(0).getName(), is("refs/tags/module-with-test-failure-1.0.1"));
+    }
+
+    @Test
+    public void doesNotReleaseIfThereAreTestFailuresAndTagsAreNotWrittenWhenPushedAtTheEnd() throws Exception {
+        try {
+            projectWithTestsThatFail.mvnRelease("1", "-DpushTagsAtTheEnd=true");
+            Assert.fail("Should have failed");
+        } catch (MavenExecutionException e) {
+
+        }
+        assertThat(projectWithTestsThatFail.local, hasCleanWorkingDirectory());
+        assertThat(projectWithTestsThatFail.local.tagList().call(), is(empty()));
+        assertThat(projectWithTestsThatFail.origin.tagList().call(), is(empty()));
     }
 
     @Test

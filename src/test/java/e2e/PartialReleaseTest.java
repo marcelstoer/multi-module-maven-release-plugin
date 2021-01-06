@@ -36,7 +36,19 @@ public class PartialReleaseTest {
 
     @Test
     public void buildsAndInstallsAndTagsAllModules() throws Exception {
-        List<String> commandOutput = testProject.mvnRelease(buildNumber, "-DmodulesToRelease=core-utils");
+        buildsAndInstallsAndTagsAllModules(false);
+    }
+
+    @Test
+    public void buildsAndInstallsAndTagsAllModulesAlsoWhenTaggedAtTheEnd() throws Exception {
+        buildsAndInstallsAndTagsAllModules(true);
+    }
+
+    private void buildsAndInstallsAndTagsAllModules(boolean pushTagsAtTheEnd) throws Exception {
+        List<String> commandOutput = testProject.mvnRelease(buildNumber,
+                "-DmodulesToRelease=core-utils",
+                "-DpushTagsAtTheEnd=" + pushTagsAtTheEnd
+        );
         buildsEachProjectOnceAndOnlyOnce(commandOutput);
         installsAllModulesIntoTheRepoWithTheBuildNumber();
         theLocalAndRemoteGitReposAreTaggedWithTheModuleNameAndVersion();

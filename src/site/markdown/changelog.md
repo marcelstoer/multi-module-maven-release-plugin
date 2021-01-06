@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+### 3.3.0
+
+* Added possibility to push the new tag(s) at the end of the release build, if successful, through the `pushTagsAtTheEnd` 
+boolean property. <br />
+By default it has value `false`, so the tags are pushed before the build starts like in the previous version.
+
 ### 3.2.0
 
 * Added support for processing version properties e.g. `<version>${foo.version}</version>`

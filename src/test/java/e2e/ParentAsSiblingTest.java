@@ -37,7 +37,18 @@ public class ParentAsSiblingTest {
 
     @Test
     public void buildsAndInstallsAndTagsAllModules() throws Exception {
-        buildsEachProjectOnceAndOnlyOnce(testProject.mvnRelease(buildNumber));
+        buildsAndInstallsAndTagsAllModules(false);
+    }
+
+    @Test
+    public void buildsAndInstallsAndTagsAllModulesAlsoWhenTaggedAtTheEnd() throws Exception {
+        buildsAndInstallsAndTagsAllModules(true);
+    }
+
+    private void buildsAndInstallsAndTagsAllModules(boolean pushTagsAtTheEnd) throws Exception {
+        buildsEachProjectOnceAndOnlyOnce(testProject.mvnRelease(buildNumber,
+                "-DpushTagsAtTheEnd=" + pushTagsAtTheEnd
+        ));
         installsAllModulesIntoTheRepoWithTheBuildNumber();
         theLocalAndRemoteGitReposAreTaggedWithTheModuleNameAndVersion();
     }

@@ -67,7 +67,16 @@ public class SingleModuleTest {
 
     @Test
     public void theLocalAndRemoteGitReposAreTaggedWithTheModuleNameAndVersion() throws IOException, InterruptedException {
-        testProject.mvnRelease(buildNumber);
+        theLocalAndRemoteGitReposAreTaggedWithTheModuleNameAndVersion(false);
+    }
+
+    @Test
+    public void theLocalAndRemoteGitReposAreTaggedWithTheModuleNameAndVersionAlsoWhenTagsArePushedAtTheEnd() throws IOException, InterruptedException {
+        theLocalAndRemoteGitReposAreTaggedWithTheModuleNameAndVersion(true);
+    }
+
+    private void theLocalAndRemoteGitReposAreTaggedWithTheModuleNameAndVersion(boolean pushAtTheEnd) throws IOException, InterruptedException {
+        testProject.mvnRelease(buildNumber, "-DpushTagsAtTheEnd=" + pushAtTheEnd);
         String expectedTag = "single-module-" + expected;
         assertThat(testProject.local, hasTag(expectedTag));
         assertThat(testProject.origin, hasTag(expectedTag));
@@ -75,9 +84,18 @@ public class SingleModuleTest {
 
     @Test
     public void onlyLocalGitRepoIsTaggedWithTheModuleNameAndVersionWithoutPush() throws IOException, InterruptedException {
-        testProject.mvn("-DbuildNumber=" + buildNumber,
+        onlyLocalGitRepoIsTaggedWithTheModuleNameAndVersionWithoutPush(false);
+    }
+
+    @Test
+    public void onlyLocalGitRepoIsTaggedWithTheModuleNameAndVersionWithoutPushAlsoWhenTaggedAtTheEnd() throws IOException, InterruptedException {
+        onlyLocalGitRepoIsTaggedWithTheModuleNameAndVersionWithoutPush(true);
+    }
+
+    private void onlyLocalGitRepoIsTaggedWithTheModuleNameAndVersionWithoutPush(boolean pushAtTheEnd) throws IOException, InterruptedException {
+        testProject.mvnRelease(buildNumber,
                 "-Dpush=false",
-                "releaser:release");
+                "-DpushTagsAtTheEnd=" + pushAtTheEnd);
         String expectedTag = "single-module-" + expected;
         assertThat(testProject.local, hasTag(expectedTag));
         assertThat(testProject.origin, not(hasTag(expectedTag)));
